@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master JS — KavirajAnsh</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b22; --accent:#58a6ff; 
+    --text:#c9d1d9; --muted:#8b949e; --border:#30363d;
+  }
+  *{margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif;}
+  body{background:var(--bg); color:var(--text); min-height:100vh;}
+
+  /* ===== LOGIN PAGE ===== */
+  #loginPage{display:flex; justify-content:center; align-items:center; height:100vh;}
+  .loginBox{
+    background:var(--card); padding:30px; border-radius:8px; border:1px solid var(--border);
+    width:300px; text-align:center;
+  }
+  .loginBox h2{margin-bottom:20px; color:var(--accent);}
+  .loginBox input{width:100%; padding:10px; margin:10px 0; border:1px solid var(--border);
+    border-radius:4px; background:#0d1117; color:var(--text);}
+  .loginBox button{padding:10px; width:100%; background:var(--accent); border:none; 
+    border-radius:4px; font-weight:bold; cursor:pointer;}
+  .error{color:red; margin-top:10px;}
+
+  /* ===== HEADER ===== */
+  header{
+    background:var(--card); padding:15px; display:flex; justify-content:space-between; align-items:center;
+    border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .logo{width:32px; height:32px; border-radius:6px; background:var(--accent); display:flex; align-items:center;
+    justify-content:center; font-weight:bold; color:white;}
+  nav a{margin:0 10px; text-decoration:none; color:var(--text); font-weight:bold;}
+  nav a:hover{color:var(--accent);}
+
+  /* ===== LAYOUT ===== */
+  main{display:flex; min-height:calc(100vh - 60px);}
+  aside{width:250px; border-right:1px solid var(--border); background:#0d1117; padding:10px;}
+  .search input{width:100%; padding:8px; border-radius:4px; border:1px solid var(--border);
+    background:#161b22; color:var(--text); margin-bottom:10px;}
+  .topic-list{max-height:calc(100vh - 120px); overflow-y:auto;}
+  .topic-list button{display:block; width:100%; background:none; border:none; color:var(--muted);
+    text-align:left; padding:6px; border-radius:4px; cursor:pointer;}
+  .topic-list button:hover{background:var(--border); color:var(--accent);}
+
+  /* ===== CONTENT ===== */
+  .content{flex:1; padding:20px; overflow-y:auto;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:8px; padding:15px; margin-bottom:20px;}
+  .card h2,.card h3{color:var(--accent); margin-bottom:10px;}
+  .desc{color:var(--muted); margin-bottom:10px;}
+  pre{background:#0d1117; padding:10px; border:1px solid var(--border); border-radius:6px; overflow-x:auto;}
+  code{color:#d2a8ff; font-size:14px;}
+  .controls{margin-top:10px;}
+  .controls button{margin-right:10px; padding:5px 10px; border:none; border-radius:4px; cursor:pointer;}
+  .run{background:#238636; color:white;}
+  .copy{background:#444; color:white;}
+  .output{margin-top:10px; padding:10px; border:1px solid var(--border); border-radius:6px;
+    background:#0d1117; font-size:14px; min-height:20px; white-space:pre-wrap;}
+  
+  @media(max-width:768px){
+    aside{display:none;}
+    main{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage">
+  <div class="loginBox">
+    <h2>Login to Master<br> KavirajAnsh</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="checkLogin()">Login</button>
+    <div class="error" id="errorMsg"></div>
+  </div>
+</div>
+
+<!-- ===== WEBSITE ===== -->
+<div id="site" style="display:none;">
+  <header>
+    <div class="brand">
+      <div class="logo">JS</div>
+      <div>
+        <div style="font-weight:800">Master KavirajAnsh</div>
+        <div style="font-size:12px; color:var(--muted)">50+ concepts • interactive examples</div>
+      </div>
+    </div>
+    <nav>
+      <a href="#" data-page="home">Home</a>
+      <a href="#" data-page="search">Search</a>
+      <a href="#" data-page="examples">Examples</a>
+    </nav>
+  </header>
+
+  <main>
+    <aside>
+      <div class="search"><input id="searchBox" placeholder="Search topics..."></div>
+      <div class="topic-list" id="topicList"></div>
+    </aside>
+    <section class="content" id="contentArea"></section>
+  </main>
+</div>
+
+<script>
+/*****************************
+ * LOGIN CHECK
+ *****************************/
+function checkLogin(){
+  let user=document.getElementById("username").value;
+  let pass=document.getElementById("password").value;
+  if(user==="ansh" && pass==="neha"){
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("site").style.display="block";
+  } else {
+    document.getElementById("errorMsg").innerText="❌ Invalid credentials!";
+  }
+}
+
+/*****************************
+ * DATA (50+ Concepts)
+ *****************************/
+const concepts=[
+  {id:"console", title:"Console Log", desc:"Console me message print karna.", code:`console.log("Hello JavaScript!");`},
+  {id:"vars", title:"Variables", desc:"Data ko store karne ke liye.", code:`let name="Ansh";\nconst pi=3.14;\nvar age=20;`},
+  {id:"datatype", title:"Data Types", desc:"String, Number, Boolean, etc.", code:`let str="hello"; let num=42; let bool=true;`},
+  {id:"operators", title:"Operators", desc:"Arithmetic and logical operators.", code:`console.log(5+3);\nconsole.log(5>3 && 2<4);`},
+  {id:"ifelse", title:"If Else", desc:"Condition check karne ke liye.", code:`let age=18;\nif(age>=18){console.log("Adult");}\nelse{console.log("Minor");}`},
+  {id:"switch", title:"Switch", desc:"Multiple conditions ko handle karne ke liye.", code:`let day=2;\nswitch(day){\n case 1:console.log("Mon");break;\n case 2:console.log("Tue");break;\n}`},
+  {id:"loops", title:"Loops", desc:"Code repeat karne ke liye.", code:`for(let i=1;i<=5;i++){\n  console.log(i);\n}`},
+  {id:"while", title:"While Loop", desc:"Condition-based loop.", code:`let i=0;\nwhile(i<5){console.log(i); i++;}`},
+  {id:"doWhile", title:"Do While Loop", desc:"At least ek baar chalega.", code:`let i=0;\ndo{console.log(i); i++;}while(i<5);`},
+  {id:"func", title:"Functions", desc:"Code reuse karne ke liye.", code:`function greet(n){return "Hello "+n;}\nconsole.log(greet("Ansh"));`},
+  {id:"arrow", title:"Arrow Functions", desc:"Short syntax functions.", code:`const sum=(a,b)=>a+b;\nconsole.log(sum(5,3));`},
+  {id:"array", title:"Arrays", desc:"Multiple values ek sath store.", code:`let arr=[1,2,3];\nconsole.log(arr[0]);`},
+  {id:"arrayMethods", title:"Array Methods", desc:"forEach, map, filter.", code:`let arr=[1,2,3];\narr.forEach(x=>console.log(x));`},
+  {id:"object", title:"Objects", desc:"Key-value pair data.", code:`let car={brand:"BMW",color:"Red"};\nconsole.log(car.brand);`},
+  {id:"class", title:"Classes", desc:"OOP style objects.", code:`class Person{constructor(n){this.name=n;}}\nconsole.log(new Person("Ansh"));`},
+  {id:"inherit", title:"Inheritance", desc:"Class extend karna.", code:`class A{hi(){return "Hi";}}\nclass B extends A{}\nconsole.log(new B().hi());`},
+  {id:"dom", title:"DOM Manipulation", desc:"HTML elements change karna.", code:`document.body.style.background="lightblue";`},
+  {id:"event", title:"Events", desc:"User actions par response.", code:`document.body.onclick=()=>alert("Body clicked!");`},
+  {id:"settimeout", title:"setTimeout", desc:"Delay ke sath code chalana.", code:`setTimeout(()=>console.log("Hello after 2s"),2000);`},
+  {id:"setinterval", title:"setInterval", desc:"Repeatedly execute code.", code:`setInterval(()=>console.log("tick"),1000);`},
+  {id:"trycatch", title:"Error Handling", desc:"Try...catch ka use.", code:`try{JSON.parse("abc");}catch(e){console.log("Error:",e.message);}`},
+  {id:"promise", title:"Promises", desc:"Async operations.", code:`let p=Promise.resolve("Done");\np.then(x=>console.log(x));`},
+  {id:"async", title:"Async/Await", desc:"Cleaner async code.", code:`async function test(){return "Hello";}\ntest().then(console.log);`},
+  {id:"fetch", title:"Fetch API", desc:"HTTP requests karna.", code:`fetch("https://jsonplaceholder.typicode.com/todos/1")\n.then(r=>r.json()).then(console.log);`},
+  {id:"math", title:"Math Object", desc:"Math functions.", code:`console.log(Math.random());\nconsole.log(Math.sqrt(16));`},
+  {id:"date", title:"Date Object", desc:"Date and time handle karna.", code:`let d=new Date();\nconsole.log(d.toDateString());`},
+  {id:"string", title:"String Methods", desc:"slice, substr, etc.", code:`let s="Hello";\nconsole.log(s.toUpperCase());`},
+  {id:"json", title:"JSON", desc:"Data format.", code:`let obj={a:1};\nconsole.log(JSON.stringify(obj));`},
+  {id:"map", title:"Map", desc:"Key-value collection.", code:`let m=new Map();\nm.set("a",1);\nconsole.log(m.get("a"));`},
+  {id:"set", title:"Set", desc:"Unique values.", code:`let s=new Set([1,2,2,3]);\nconsole.log(s);`},
+  {id:"spread", title:"Spread Operator", desc:"Expand arrays/objects.", code:`let arr=[1,2];\nlet newArr=[...arr,3];\nconsole.log(newArr);`},
+  {id:"destruct", title:"Destructuring", desc:"Unpack values.", code:`let [a,b]=[1,2];\nconsole.log(a,b);`},
+  {id:"template", title:"Template Literals", desc:"Backtick strings.", code:`let name="Ansh";\nconsole.log(\`Hello ${name}\`);`},
+  {id:"hoisting", title:"Hoisting", desc:"var/functions upar chalte hain.", code:`console.log(x);\nvar x=5;`},
+  {id:"closure", title:"Closures", desc:"Function ke andar function access.", code:`function outer(){let x=10;return ()=>x;}\nconsole.log(outer()());`},
+  {id:"strict", title:"Strict Mode", desc:"Errors pakadne me help.", code:`"use strict";\n// undeclaredVariable=10;`},
+  {id:"localStorage", title:"Local Storage", desc:"Browser storage.", code:`localStorage.setItem("a",10);\nconsole.log(localStorage.getItem("a"));`},
+  {id:"sessionStorage", title:"Session Storage", desc:"Temporary storage.", code:`sessionStorage.setItem("b",20);\nconsole.log(sessionStorage.getItem("b"));`},
+  {id:"modules", title:"Modules (import/export)", desc:"Code ko divide karna.", code:`// export let a=5; // import {a} from './file.js'`},
+  {id:"regex", title:"Regular Expressions", desc:"Pattern matching.", code:`let re=/\\d+/;\nconsole.log(re.test("123"));`},
+  {id:"this", title:"This Keyword", desc:"Context ke hisaab se value.", code:`console.log(this);`},
+  {id:"bind", title:"Bind/Call/Apply", desc:"Function control.", code:`function hi(){console.log(this.x);}\nhi.bind({x:5})();`},
+  {id:"prototype", title:"Prototypes", desc:"JS inheritance base.", code:`function Person(n){this.name=n;}\nPerson.prototype.sayHi=function(){return "Hi "+this.name;};\nconsole.log(new Person("Ansh").sayHi());`},
+  {id:"events2", title:"Event Bubbling", desc:"Events propagate hote hain.", code:`document.body.addEventListener("click",()=>console.log("body"));\ndocument.getElementById("contentArea").addEventListener("click",()=>console.log("content"));`},
+  {id:"canvas", title:"Canvas", desc:"Drawing graphics.", code:`let c=document.createElement("canvas");c.width=100;c.height=50;document.body.appendChild(c);let ctx=c.getContext("2d");ctx.fillRect(10,10,80,30);`},
+  {id:"geolocation", title:"Geolocation", desc:"User location fetch.", code:`navigator.geolocation.getCurrentPosition(p=>console.log(p.coords));`},
+  {id:"events3", title:"Mouse Events", desc:"mousemove, mousedown, etc.", code:`document.body.onmousemove=e=>console.log(e.clientX,e.clientY);`},
+  {id:"keydown", title:"Keyboard Events", desc:"Key press capture.", code:`document.onkeydown=e=>console.log("Key:",e.key);`},
+  {id:"intervalClear", title:"Clear Interval", desc:"Stop repeated code.", code:`let id=setInterval(()=>console.log("tick"),1000);\nsetTimeout(()=>clearInterval(id),5000);`},
+];
+
+/*****************************
+ * PAGE RENDERING
+ *****************************/
+const contentArea=document.getElementById("contentArea");
+const topicList=document.getElementById("topicList");
+const navLinks=document.querySelectorAll("nav a");
+
+// Sidebar topics
+function renderSidebar(){
+  topicList.innerHTML="";
+  concepts.forEach(c=>{
+    const btn=document.createElement("button");
+    btn.textContent=c.title;
+    btn.onclick=()=>renderConcept(c.id);
+    topicList.appendChild(btn);
+  });
+}
+renderSidebar();
+
+// Search filter
+document.getElementById("searchBox").addEventListener("input",function(){
+  const q=this.value.toLowerCase();
+  topicList.querySelectorAll("button").forEach(btn=>{
+    btn.style.display=btn.textContent.toLowerCase().includes(q)?"block":"none";
+  });
+});
+
+// Navigation
+navLinks.forEach(link=>{
+  link.addEventListener("click",e=>{
+    e.preventDefault();
+    renderPage(link.dataset.page);
+  });
+});
+renderPage("home"); // default page
+
+function renderPage(page){
+  contentArea.innerHTML="";
+  if(page==="home"){
+    contentArea.innerHTML=`<div class="card"><h2>Welcome</h2>
+    <p class="desc">Ye website aapko JavaScript ke 50+ concepts sikhaegi with examples and live run.</p></div>`;
+  }
+  else if(page==="search"){
+    contentArea.innerHTML=`<div class="card"><h2>🔍 Search Guide</h2>
+    <p class="desc">Left sidebar ke search box se topics filter kar sakte ho.</p></div>`;
+  }
+  else if(page==="examples"){
+    concepts.forEach(c=>renderConcept(c.id));
+  }
+}
+
+function renderConcept(id){
+  const c=concepts.find(x=>x.id===id);
+  if(!c) return;
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <h3>${c.title}</h3>
+    <div class="desc">${c.desc}</div>
+    <pre><code id="${c.id}-code">${escapeHtml(c.code)}</code></pre>
+    <div class="controls">
+      <button class="run" data-id="${c.id}">Run</button>
+      <button class="copy" data-id="${c.id}">Copy</button>
+    </div>
+    <div class="output" id="${c.id}-out">Output will appear here</div>
+  `;
+  contentArea.appendChild(card);
+}
+
+// Run & Copy
+document.addEventListener("click",e=>{
+  if(e.target.classList.contains("run")){
+    const id=e.target.dataset.id;
+    const code=document.getElementById(id+"-code").innerText;
+    try{
+      let output=eval(code);
+      document.getElementById(id+"-out").innerText=output??"✅ Code executed (check console)";
+    }catch(err){
+      document.getElementById(id+"-out").innerText="❌ Error: "+err.message;
+    }
+  }
+  if(e.target.classList.contains("copy")){
+    const id=e.target.dataset.id;
+    navigator.clipboard.writeText(document.getElementById(id+"-code").innerText);
+    alert("Code copied!");
+  }
+});
+
+// Escape HTML
+function escapeHtml(str){
+  return str.replace(/[&<>'"]/g,tag=>{
+    const chars={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"};
+    return chars[tag]||tag;
+  });
+}
+</script>
+</body>
+</html>
